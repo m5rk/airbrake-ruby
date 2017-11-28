@@ -64,10 +64,9 @@ module Airbrake
 
     def build_post_request(uri, notice)
       Net::HTTP::Post.new(uri.request_uri).tap do |req|
-        puts %Q(#{'*' * 80}
-#{notice.to_json}
-#{'*' * 80}
-)
+        filename = ::Rails.root.join('tmp', 'airbrake.json')
+        File.open(filename, 'w') { |writer| writer.write(notice.to_json) }
+
         req.body = notice.to_json
 
         req['Authorization'] = "Bearer #{@config.project_key}"
